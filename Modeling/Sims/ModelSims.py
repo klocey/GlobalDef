@@ -37,8 +37,6 @@ def get_abs(g_agg, gl_ab, e_opts1, e_land, Sg, lon, lat, DatLists,
     dist_from_o = np.array(dist_from_o)    
     geo_match = (g_agg/(g_agg + dist_from_o))
     
-    #print np.min(geo_match), np.mean(geo_match), np.max(geo_match)
-    
     p_or_a_geo = np.random.binomial(1, geo_match, Sg) 
 
     lon = min(map_lons, key=lambda x:abs(x-lon))
@@ -61,37 +59,29 @@ def get_abs(g_agg, gl_ab, e_opts1, e_land, Sg, lon, lat, DatLists,
     p_or_a_env = np.random.binomial(1, avg_match, Sg)
     
     sad = []
-    if typeof == 'spatial-null1': # For spatial null
+    if typeof in ['model1', 'model2']:
         sad = geo_match * p_or_a_geo
     
-    if typeof == 'spatial-null2': # For spatial null
-        sad = geo_match * p_or_a_geo * gl_ab
-    
-    if typeof == 'spatial-null3': # For spatial null
+    if typeof in ['model3', 'model4', 'model5', 'model6']: 
         sad = geo_match * p_or_a_geo * gl_ab
         
-    if typeof == 'env-niche':# For environmental
+    if typeof in ['model7', 'model8']:
         sad = avg_match * p_or_a_env
         
-    elif typeof == 'spatial-origin_env-niche': # For spatial null
+    elif typeof in ['model9', 'model10']: 
         sad = avg_match * p_or_a_geo * gl_ab
         
-    elif typeof == 'spatial-origin_env-niche-AorT': # For spatial null
+    elif typeof in ['model11', 'model12']: 
         sad = avg_match * p_or_a_geo * gl_ab * e_land
     
-    #sad = sad[sad!=0]
-    #print min(sad), int(round(np.median(sad),0)),
-    #print max(sad), ' : ', len(sad) - sad.tolist().count(0)
-    #sys.exit()
-    
     return sad
+
 
 
 
 def randcolor():
     r = lambda: random.randint(0,255)
     return '#%02X%02X%02X' % (r(),r(),r())
-
 
 
 
@@ -148,21 +138,17 @@ def run_model(j, typeof, ldg):
         opts = np.array(np.random.uniform(0, 1, Sg))
         e_opts1.append(opts)
               
-    if typeof == 'spatial-null3':    
+    if typeof in ['model5', 'model6']:    
         g_agg = 10**np.random.uniform(1,3,Sg)
     else:
         g_agg = np.ones(Sg)*10**3
         
     gl_ab = 10**np.random.uniform(1,4,Sg)
     
-        
     Ds = [0, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1500, 2000, 
           2500, 3000, 3500, 4000, 4500, 5000, 5500, 6000, 6500, 7000, 7500,
           8000, 8500, 9000, 9500, 10000, 11000, 12000, 13000, 14000, 15000, 
           16000, 17000, 18000, 19000, 20015.1]
-    
-    #Ds = [0, 200, 400, 600, 800, 1000, 2000, 4000, 6000, 8000, 10000, 12000, 
-    #      14000, 16000, 18000, 20015.1]
         
     ######################### RUN SIMULATIONS #################################
     for i in Ds:
@@ -185,7 +171,8 @@ def run_model(j, typeof, ldg):
                 pts.append([lon1, lat1])
             
         else: 
-            pts = fxns.get_pts(r, loc1, i) # get locations for samples
+            method='great_circle'
+            pts = fxns.get_pts(r, loc1, i, method) # get locations for samples
         
         geoDs2 = [] # mean geo distances 
         comDs2 = [] # community distances
@@ -202,8 +189,6 @@ def run_model(j, typeof, ldg):
             
             sad = get_abs(g_agg, gl_ab, e_opts1, terrestrial, Sg, lon, lat,
                     DatLists, map_lons, map_lats, s_o_lons, s_o_lats, typeof)
-            
-            #sad = np.random.logseries(0.99, Sg)
             
             if max(sad) != 0:
                 s_by_s.append(sad)
@@ -249,7 +234,7 @@ def run_model(j, typeof, ldg):
         
         pstr = str(j)+' : '+str(np.round(i, 1))+' '+str(np.round(avgD,1))
         pstr += ' |  BC: '+str(np.round(np.mean(comDs2), 3))+' : slope:'
-        pstr += str(np.round(slope,3))+' | model:'+str(typeof)+'; '+str(ldg)
+        pstr += str(np.round(slope,3))+' | model:'+str(typeof)
         print(pstr)
         
         geoDs.append(np.mean(geoDs2))
@@ -280,7 +265,6 @@ land = prep(land_geom)
 #m = plt.axes(projection=ccrs.PlateCarree())
 
 img = io.imread('EnvData/SeaIceConcAndSnow.tif', as_gray=True)
-
 data = plt.imread('EnvData/SeaIceConcAndSnow.tif')
 
 map_lons = np.linspace(-180, 180, data.shape[1]-1)
@@ -302,25 +286,29 @@ PermDat = io.imread('EnvData/Permafrost.tif', as_gray=True)
 
 
 OUT = open(mydir + '/Modeling/SimData/Data4Figs.txt', 'w+')
-OUT.write('iteration\tdata_type\tmodel_type\tlatDivGrad\tdata\n')
+OUT.write('iteration\tdata_type\tmodel\tlatDivGrad\tdata\n')
 OUT.close()
 
 
-models = ['spatial-null1', 'spatial-null2', 'spatial-null3', 
-          'spatial-origin_env-niche', 'env-niche', 
-          'spatial-origin_env-niche-AorT']
+models = ['model1', 'model2', 'model3',
+          'model4', 'model5', 'model6',
+          'model7', 'model8', 'model9',
+          'model10', 'model11', 'model12']
 
 
-ldg_ls = [0,1]
 
 for iii in range(0, 10000):
     for typeof in models:
-        for ldg in ldg_ls:
-            geoDs, maxDs, Slopes, clr = run_model(iii, typeof, ldg)
+        ldg_mods = ['model2','model4', 'model6', 'model8', 'model10', 'model12']
         
-            OUT = open(mydir + '/Modeling/SimData/Data4Figs.txt', 'a+')
-            OUT.write(str(iii)+'\tgeoDs\t'+typeof+'\t'+str(ldg)+'\t'+str(geoDs)+'\n')
-            OUT.write(str(iii)+'\tmaxDs\t'+typeof+'\t'+str(ldg)+'\t'+str(maxDs)+'\n')
-            OUT.write(str(iii)+'\tSlopes\t'+typeof+'\t'+str(ldg)+'\t'+str(Slopes)+'\n')
-            OUT.write(str(iii)+'\tclrs\t'+typeof+'\t'+str(ldg)+'\t'+str(clr)+'\n')
-            OUT.close()
+        ldg = 0
+        if typeof in ldg_mods: ldg = 1
+        
+        geoDs, maxDs, Slopes, clr = run_model(iii, typeof, ldg)
+        
+        OUT = open(mydir + '/Modeling/SimData/Data4Figs.txt', 'a+')
+        OUT.write(str(iii)+'\tgeoDs\t'+typeof+'\t'+str(ldg)+'\t'+str(geoDs)+'\n')
+        OUT.write(str(iii)+'\tmaxDs\t'+typeof+'\t'+str(ldg)+'\t'+str(maxDs)+'\n')
+        OUT.write(str(iii)+'\tSlopes\t'+typeof+'\t'+str(ldg)+'\t'+str(Slopes)+'\n')
+        OUT.write(str(iii)+'\tclrs\t'+typeof+'\t'+str(ldg)+'\t'+str(clr)+'\n')
+        OUT.close()

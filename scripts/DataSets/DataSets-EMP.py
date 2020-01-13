@@ -12,19 +12,26 @@ import fxns
 
 
 outstring = 'name,distance'
-OUT = open('DataSets-EMP.txt', 'w+')
+OUT = open(mydir + '/DataSets/Distances/DataSets-EMP.txt', 'w+')
 OUT.write(outstring+'\n')
 OUT.close()
 
-name = 'EMP'
+OUT = open(mydir + '/DataSets/Distances/DataSets-EMP.txt', 'a+')
 
-OUT = open('DataSets-EMP.txt', 'a+')
+
 df = pd.read_csv(mydir + '/DataSets/EMP/emp_qiime_mapping_release1_20170912_LatLon.tsv', sep='\t')
 
+name = 'EMP'
 dflons = df['longitude_deg'].tolist()
 dflats = df['latitude_deg'].tolist()
 lons = []
 lats = []
+
+df2 = df[df['latitude_deg'] > 0.0]['latitude_deg']
+print(len(df2))
+print(len(df))
+
+
     
 for i, lon in enumerate(dflons):
     lat = dflats[i]
@@ -37,7 +44,7 @@ print(name,' : ',min(lons),max(lons),min(lats),max(lats))
 
 Is = range(len(lons))
     
-for i in range(10000):
+for i in range(100000):
     i1, i2 = np.random.choice(Is, size=2, replace=False)
 
     lon1 = lons[i1]

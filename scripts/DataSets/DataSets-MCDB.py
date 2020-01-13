@@ -12,20 +12,28 @@ import fxns
 
 
 outstring = 'name,distance'
-OUT = open('DataSets-MCDB.txt', 'w+')
+OUT = open(mydir + '/DataSets/Distances/DataSets-MCDB.txt', 'w+')
 OUT.write(outstring+'\n')
 OUT.close()
 
-name = 'MCDB'
 
-OUT = open('DataSets-MCDB.txt', 'a+')
+OUT = open(mydir + '/DataSets/Distances/DataSets-MCDB.txt', 'a+')
+
+
+name = 'MCDB'
 df = pd.read_csv(mydir + '/DataSets/MCDB/MCDB_latlon.csv', sep=',')
 
 dflons = df['Longitude'].tolist()
 dflats = df['Latitude'].tolist()
 lons = []
 lats = []
-    
+
+df2 = df[df['Latitude'] > 0.0]['Latitude']
+print(len(df2))
+print(name, len(dflons))
+
+
+
 for i, lon in enumerate(dflons):
     lat = dflats[i]
     if np.isnan(lon) == False and np.isnan(lat) == False:
@@ -33,7 +41,7 @@ for i, lon in enumerate(dflons):
         lats.append(lat)
     
 print(name,' : ',min(lons),max(lons),min(lats),max(lats))
-#sys.exit()
+
     
 
 Is = range(len(lons))

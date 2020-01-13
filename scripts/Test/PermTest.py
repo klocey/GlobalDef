@@ -25,9 +25,9 @@ outstring += ',var1,skew1,kur1,var2,skew2,kur2'
 #    OUT.write(outstring+'\n')
 #else:
 
-#OUT = open(mydir + '/SimData/PermTest-great_circle.txt', 'w+')
-#OUT.write(outstring+'\n')
-#OUT.close()
+OUT = open(mydir + '/SimData/PermTest-great_circle.txt', 'w+')
+OUT.write(outstring+'\n')
+OUT.close()
 
 
 ed = pi*float(6371.0087714150598)
@@ -36,14 +36,12 @@ sites = 10**5
 ir = 10
 d_ref = 1000
 
-for sim in range(7,10):
+for sim in range(10):
     
     loc1 = [90,0]
     varM1,skewM1,varM2,skewM2 = [0.0]*4
     
-    if sim == 7:
-        ct = 603
-    else: ct = 0
+    ct = 0
     while ct < 1000:
         
         skip = 0        
