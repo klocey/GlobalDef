@@ -25,9 +25,9 @@ Kenneth J. Locey, Ph.D.
 
 ## Contents
 
-**DataSets**: A directory to contain empirical datasets obtained from the Global Biodiversity Information Facility (GBIF), the Global Prokaryotic Census (GPC), the Earth Microbiome Project (EMP), the Mammal Community Database (MCDB), and the Global Biotic Interactions (GloBI) service. Those datasets are not provided in this repository, for redistribution reasons that varied among datasets. Directions for obtaining and using those datasets are given in the `DataSets.md` file inside the directory.
+**DataSets**: A directory to contain empirical datasets obtained from the Global Biodiversity Information Facility (GBIF), the Global Prokaryotic Census (GPC), the Earth Microbiome Project (EMP), the Mammal Community Database (MCDB), and the Global Biotic Interactions (GloBI) service. Those datasets are not provided in this repository, for redistribution reasons that varied among datasets. Directions for obtaining and using those datasets are given in the `DataSets.pdf` file inside the directory.
 
-* **DataSets.md**: A markdown file providing detailed descriptions for files contained within and for each dataset and directions for obtaining forms of each dataset required by the python scripts of this repository. 
+* **DataSets.pdf**: A file providing descriptions and important information for each dataset used in the associated study and provided here.
 * **Distances**: A directory containing files used by fig3.py to generate Fig3.png. Each file contains measures of distance randomly sampled from each dataset.
 		* DataSets-AMNH-B.txt
 		* DataSets-EMP.txt
@@ -52,6 +52,8 @@ Kenneth J. Locey, Ph.D.
 
 
 **Modeling**: A directory containing two directories related to the simulation-based probabilistic modeling of local-to-global scale ecological communities
+
+* **Modeling.pdf**: A file providing descriptions of the simulation-based probabilistic communities models used in the associated study.
 
 * **Sims**: Contains data and code for running community simulations
 	* EnvData: Contains geotiffs used by ModelSims.py
